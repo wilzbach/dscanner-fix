@@ -15,7 +15,8 @@ void main(string[] args)
                  "repodir|d", &repoDir);
 
     auto replacements = inFileList.parseOutput;
-    foreach (f; replacements.byKeyValue)
+    defaultPoolThreads(20);
+    foreach (f; replacements.byKeyValue.parallel(1))
     {
         auto tester = FileTester(repoDir, f.key, ["rdmd",
             "--compiler=/home/xsebi/dlang/dmd-master-2017-02-20/linux/bin64/dmd",
@@ -38,6 +39,5 @@ void main(string[] args)
                 }
             }
         }
-        break;
     }
 }
