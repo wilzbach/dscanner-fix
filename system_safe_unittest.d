@@ -20,7 +20,8 @@ void main(string[] args)
     {
         auto tester = FileTester(repoDir, f.key, ["rdmd",
             "--compiler=/home/xsebi/dlang/dmd-master-2017-02-20/linux/bin64/dmd",
-            "-main", "-unittest"]);
+            "-main",
+            "-unittest"]);
         with (tester)
         foreach (e; f.value)
         {
