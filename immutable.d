@@ -17,19 +17,26 @@ void main(string[] args)
     auto replacements = inFileList.parseOutput;
 
     // runs all replacement checks with the maximal thread pool
-    foreach (e; replacements.byPair.parallel)
+    defaultPoolThreads(20);
+    foreach (f; replacements.byKeyValue.parallel(1))
     {
-        auto tester = FileTester(repoDir, e.key, ["rdmd", "-main", "-unittest"]);
+        auto tester = FileTester(repoDir, f.key, [
+            "/home/xsebi/dlang/dmd-master-2017-02-20/linux/bin64/dmd",
+            "-unittest",
+            "-main",
+            "-c",
+            "-dip25",
+            //"-run"
+        ]);
         with (tester)
-        foreach (entry; values)
+        foreach (e; f.value)
         {
-            auto line = entry.line - 1; // dscanner lines start with 1
             // try to avoid false positives at all costs
-            if (lines[line].canFind("="))
+            if (lines[e.line].canFind("="))
             {
-                auto tmp = lines[line].splitter("=");
-                string proposed = tmp.front.replace(" auto ", " const ") ~ "=" ~ tmp.dropOne.join("=");
-                testChange(line, proposed);
+                auto tmp = lines[e.line].splitter("=");
+                string proposed = tmp.front.replace(" auto ", " immutable ") ~ "=" ~ tmp.dropOne.join("=");
+                testChange(e.line, proposed);
             }
         }
     }
