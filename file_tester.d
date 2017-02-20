@@ -18,7 +18,7 @@ struct FileTester
         destFile = buildPath(repoDir, path);
         lines = File(destFile).byLineCopy.array;
         this.cmd = cmd;
-        tmpDir = buildPath(tempDir, "file_tester", path.dirName.replace("/", "_"));
+        tmpDir = buildPath(tempDir, "file_tester", path.stripExtension.replace("/", "_"));
         tmpDir.mkdirRecurse;
         patchModuleLine;
     }
