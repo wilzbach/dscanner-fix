@@ -10,7 +10,7 @@ struct FileTester
     string tmpDir;
     size_t moduleLine;
 
-    this(string repoDir, string path, string[] cmd)
+    this(string repoDir, string path, string[] cmd = null)
     {
         this.path = path;
         writeln("open: ", path);
@@ -20,7 +20,9 @@ struct FileTester
         this.cmd = cmd;
         tmpDir = buildPath(tempDir, "file_tester", path.stripExtension.replace("/", "_"));
         tmpDir.mkdirRecurse;
-        patchModuleLine;
+
+        if (cmd)
+            patchModuleLine;
     }
 
     // simply patch it to "v2"
@@ -44,7 +46,8 @@ struct FileTester
 
     ~this()
     {
-        unpatchModuleLine;
+        if (cmd)
+            unpatchModuleLine;
 
         // dump final changes
         auto tmpFile = writeLinesToFile;
@@ -92,5 +95,10 @@ struct FileTester
             lines[line] = oldLine;
             return false;
         }
+    }
+
+    string opIndex(size_t i) { return lines[i]; }
+    void opIndexAssign(string line, size_t i) {
+        lines[i] = line;
     }
 }
