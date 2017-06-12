@@ -17,6 +17,7 @@ Available fixes
 |`sort_imports`     | `imports_sortedness`		  | sorts all imports lexicographically |
 |`d_code_markdown`  | -		  | rewrites `$(D )` to Markdown |
 |`assert_writeln_magic`  | -		  | rewrites `assert(a = b);` to `writeln(a); // b`, part of [dlang.org](https://github.com/dlang/dlang.org/blob/master/assert_writeln_magic.d)|
+|`brace_style_allman`     | `allman_braces_check`		  | fixes allman brace styles |
 
 [if_constraints]: https://github.com/Hackerpilot/Dscanner/pull/394
 

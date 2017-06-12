@@ -11,7 +11,6 @@ struct Entry
     size_t column;
 }
 
-
 // returns hashmap with list of replacements for each file entry
 Entry[][string] parseOutput(string inFileList)
 {
