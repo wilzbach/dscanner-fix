@@ -86,12 +86,7 @@ void main(string[] args)
         //if (f.key != "std/string.d")
             //continue;
 
-        auto tester = FileTester(repoDir, f.key, ["rdmd",
-            "-c",
-            "-w",
-            "-dip25",
-            "--compiler=/home/xsebi/dlang/dmd/generated/linux/64/release/dmd",
-            "-main", "-unittest"]);
+        auto tester = FileTester(repoDir, f.key, null);
 
         bool[size_t] hasBeenSorted;
         with (tester)
