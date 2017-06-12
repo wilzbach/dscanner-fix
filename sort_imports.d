@@ -41,13 +41,49 @@ void sortImportWithinLines(string[] lines)
     Entry[] ll;
     foreach (line; lines)
     {
+        import std.uni : sicmp;
         if (line.canFind("import "))
+        {
+            if (line.endsWith(";"))
+            {
+                // sort selective imports
+                if (line.canFind(":"))
+                {
+                    auto parts = line[0 .. $ - 1].splitter(" : ");
+                    line = parts.front ~ " : " ~ parts
+                        .dropOne
+                        .front
+                        .splitter(",")
+                        .map!strip
+                        .array
+                        .sort!((a, b) => a.sicmp(b) < 0)
+                        .release
+                        .joiner(", ")
+                        .to!string ~ ";";
+                }
+                // sort packages within one line
+                else if (line.canFind(", "))
+                {
+                    auto parts = line[0 .. $ - 1].splitter("import ");
+                    line = parts.front ~ "import " ~ parts
+                        .dropOne
+                        .front
+                        .splitter(",")
+                        .map!strip
+                        .array
+                        .sort!((a, b) => a.sicmp(b) < 0)
+                        .release
+                        .joiner(", ")
+                        .to!string ~ ";";
+                }
+            }
             ll ~= Entry([line], line
                 .byCodeUnit
                 .findSplitAfter("import ")[1]
                 .filter!(a => a.isAlpha)
                 .until(':')
                 .to!string);
+        }
         else
         {
             ll.back.lines ~= line;
