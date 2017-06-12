@@ -6,10 +6,12 @@ import std.algorithm, std.array, std.ascii, std.conv, std.file, std.getopt,
 
 import dscanner, file_tester;
 
+enum Direction { upwards, downwards}
+
 /**
 Import on multiple lines are tricky
 */
-auto countLines(R)(R lines)
+auto countLines(R)(R lines, Direction direction)
 {
     size_t length = 0;
     bool continuesOnNextLine;
@@ -17,11 +19,14 @@ auto countLines(R)(R lines)
     {
         if (line.length == 0)
             break;
+        if (line.startsWith("//"))
+            break;
         if (!line.canFind("import") && !continuesOnNextLine)
             break;
 
         length++;
-        continuesOnNextLine = !line.endsWith(";");
+        if (direction == Direction.downwards)
+            continuesOnNextLine = !line.endsWith(";");
     }
     return length;
 }
@@ -72,17 +77,20 @@ void main(string[] args)
     auto replacements = inFileList.parseOutput;
     foreach (f; replacements.byKeyValue)
     {
-        //if (f.key != "std/experimental/allocator/typed.d")
+        //if (f.key != "std/experimental/allocator/building_blocks/region.d")
             //continue;
 
         //if (f.key != "std/windows/registry.d")
+            //continue;
+
+        //if (f.key != "std/string.d")
             //continue;
 
         auto tester = FileTester(repoDir, f.key, ["rdmd",
             "-c",
             "-w",
             "-dip25",
-            "--compiler=/home/xsebi/dlang/dmd-master-2017-02-20/linux/bin64/dmd",
+            "--compiler=/home/xsebi/dlang/dmd/generated/linux/64/release/dmd",
             "-main", "-unittest"]);
 
         bool[size_t] hasBeenSorted;
@@ -97,8 +105,8 @@ void main(string[] args)
                 continue;
             }
             // search import lines above
-            auto before = lines[0 .. e.line + 1].retro.countLines - 1;
-            auto after = lines[e.line .. $].countLines - 1;
+            auto before = lines[0 .. e.line + 1].retro.countLines(Direction.upwards) - 1;
+            auto after = lines[e.line .. $].countLines(Direction.downwards) - 1;
 
             writefln("line: %s (before: %d, after: %d)", e.line, before, after);
             sortImportWithinLines(lines[e.line - before .. e.line + after + 1]);
