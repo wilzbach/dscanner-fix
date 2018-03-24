@@ -12,7 +12,7 @@ Available fixes
 | script name        | DScanner config       			 | Description                   |
 | ----------------- | ---------------------------- | ----------------------------- |
 |`system_unittext`  | `explicitly_annotated_unittests`  | sets all unattributed unittests to either `@safe` or `@system` (it will try to compile every change)|
-|`if_constraint`    | [WIP][if_constraints]			  | sets the indentation level of `if` constraints to the same of the declaration |
+|`if_constraint`    | `if_constraints_indent`		  | sets the indentation level of `if` constraints to the same of the declaration |
 |`immutable`        | `could_be_immutable_check`		  | tries to set all potentially immutable variables to `const` (it will try to compile every change, WIP) |
 |`sort_imports`     | `imports_sortedness`		  | sorts all imports lexicographically |
 |`d_code_markdown`  | -		  | rewrites `$(D )` to Markdown |
